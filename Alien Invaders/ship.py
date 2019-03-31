@@ -8,7 +8,7 @@ class Ship():
         self.ai_settings = ai_settings
 
         # Wczytanie obrazu statku kosmicznego i wczytanie jego prostokąta.
-        self.image = pygame.image.load('Source/images/Ship_0.png')
+        self.image = pygame.image.load('Alien Invaders/images/Ship_0.png')
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
 

@@ -10,7 +10,7 @@ class Alien(Sprite):
         self.ai_settings = ai_settings
 
         # Wczytanie obrazu obcego i zdefiniowanie jego atrybutu rect.
-        self.image = pygame.image.load("Source/images/thug.png")
+        self.image = pygame.image.load("Alien Invaders/images/thug.png")
         self.rect = self.image.get_rect()
 
         # Umieszczenie nowego obcego w poliżu lewego górnego rogu ekranu.
