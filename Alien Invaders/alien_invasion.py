@@ -4,6 +4,7 @@ from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 from game_stats import GameStats
+from scoreboard import Scoreboard
 import game_functions as gf
 from button import Button
 
@@ -19,8 +20,10 @@ def run_game():
     # Utworzenie przycisku Gra.
     play_button = Button(ai_settings, screen, "PLAY")
 
-    # Utworzenie egzemplarza przeznaczonego do przechowywania danych statystycznych dotyczących gry.
+    # Utworzenie egzemplarza przeznaczonego do przechowywania danych statystycznych dotyczących gry,
+    # oraz utworzenie egzemplarza klasy Scoreboard.
     stats = GameStats(ai_settings)
+    sb = Scoreboard(ai_settings, screen, stats)
 
     # Utworzenie statku kosmicznego.
     ship = Ship(ai_settings, screen)
@@ -41,9 +44,10 @@ def run_game():
                         play_button, ship, aliens, bullets)
         if stats.game_active:
             ship.update()
-            gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+            gf.update_bullets(ai_settings, screen, stats,
+                              sb, ship, aliens, bullets)
             gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
-        gf.update_screen(ai_settings, screen, stats, ship,
+        gf.update_screen(ai_settings, screen, stats, sb, ship,
                          aliens, bullets, play_button)
 
 

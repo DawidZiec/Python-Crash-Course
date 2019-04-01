@@ -34,6 +34,9 @@ class Settings():
         # Wartość fleet_direction wynosząca 1 oznacza ruch w prawi, natomiast -1 w lewo.
         self.fleet_direction = 1
 
+        # Punktacja.
+        self.alien_points = 50
+
     def increase_speed(self):
         """Zmiana ustawie” dotyczących szybkości."""
         self.ship_speed_factor *= self.speedup_scale
