@@ -6,11 +6,13 @@ from ship import Ship
 from game_stats import GameStats
 import game_functions as gf
 
+
 def run_game():
     # Inicjalizacja gry, ustawień i utworzenie obiektu ekranu.
     pygame.init()
     ai_settings = Settings()
-    screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
+    screen = pygame.display.set_mode(
+        (ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption("Alien Invasion")
 
     # Utworzenie egzemplarza przeznaczonego do przechowywania danych statystycznych dotyczących gry.
@@ -33,9 +35,10 @@ def run_game():
     while True:
         gf.check_events(ai_settings, screen, ship, bullets)
         if stats.game_active:
-                ship.update()
-                gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
-                gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
+            ship.update()
+            gf.update_bullets(ai_settings, screen, ship, aliens, bullets)
+            gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
         gf.update_screen(ai_settings, screen, ship, aliens, bullets)
+
 
 run_game()

@@ -1,5 +1,6 @@
 import pygame
 
+
 class Ship():
 
     def __init__(self, ai_settings, screen):
@@ -32,8 +33,8 @@ class Ship():
             self.center -= self.ai_settings.ship_speed_factor
 
         # Uaktualnienie obiektu rect na podstawie wartosci self.center.
-        self.rect.centerx = self.center # 5.
-    
+        self.rect.centerx = self.center  # 5.
+
     def blitme(self):
         """Wyświetlanie statku kosmicznego w jego aktualnym położeniu."""
         self.screen.blit(self.image, self.rect)

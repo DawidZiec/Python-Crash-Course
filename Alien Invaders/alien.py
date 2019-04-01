@@ -1,8 +1,10 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Alien(Sprite):
     """Klasa przedstawiająca pojedynczego obcego we flocie."""
+
     def __init__(self, ai_settings, screen):
         """Inicjalizacja obcego i zdefiniowanie jego położenia początkowego."""
         super().__init__()
@@ -34,5 +36,6 @@ class Alien(Sprite):
 
     def update(self):
         """Przesunięcie obcego w prawo."""
-        self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
+        self.x += (self.ai_settings.alien_speed_factor *
+                   self.ai_settings.fleet_direction)
         self.rect.x = self.x

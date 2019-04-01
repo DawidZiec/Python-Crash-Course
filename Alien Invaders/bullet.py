@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
 
+
 class Bullet(Sprite):
     """Klasa przeznaczona do zarządzania pociskami wystrzliwanymi przez statek."""
 
@@ -10,7 +11,8 @@ class Bullet(Sprite):
         self.screen = screen
 
         # Utworzenie prostokąta pocisku w punkcie (0, 0), a następnie zdefiniowanie dla niego odpowiedniego położenia.
-        self.rect = pygame.Rect(0, 0, ai_settings.bullet_width, ai_settings.bullet_height)
+        self.rect = pygame.Rect(
+            0, 0, ai_settings.bullet_width, ai_settings.bullet_height)
         self.rect.centerx = ship.rect.centerx
         self.rect.top = ship.rect.top
 
