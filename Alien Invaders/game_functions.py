@@ -26,7 +26,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
     """Reakcja na zdarzenia generowane przez klawiaturę i mysz."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -38,8 +38,36 @@ def check_events(ai_settings, screen, ship, bullets):
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
 
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(ai_settings, screen, stats, play_button,
+                              ship, aliens, bullets, mouse_x, mouse_y)
 
-def update_screen(ai_settings, screen, ship, aliens, bullets):
+
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
+    """Rozpoczęcie nowej gry po kliknięciu przycisku Gra przez użytkownika."""
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        # Wyzerowanie ustawień dotyczących szybkości gry.
+        ai_settings.initialize_dynamic_settings()
+
+        # Ukrycie kursora myszy.
+        pygame.mouse.set_visible(False)
+
+        # Wyzerowanie danych statystycznych gry.
+        stats.reset_stats()
+        stats.game_active = True
+
+        # Usunięcia zawartości list aliens i bullets.
+        aliens.empty()
+        bullets.empty()
+
+        # Utworzenie nowej floty i wyzerowanie statku.
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
+
+
+def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
     """Uaktualnienie obrazów na ekranie i przejście do nowego ekranu."""
     # Odświeżanie ekranu w trakcie każdej iteracji pętli.
     screen.fill(ai_settings.bg_color)
@@ -50,6 +78,10 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
 
     ship.blitme()
     aliens.draw(screen)
+
+    # Wyświetlenie przycisku tylko wtedy, gdy gra jest nieaktywna.
+    if not stats.game_active:
+        play_button.draw_button()
 
     # Wyświetlenie ostatnio zmodyfikowanego ekranu.
     pygame.display.flip()
@@ -74,8 +106,9 @@ def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
     # Usunięcie wszystkich pocisków i obcych, między którymi doszło do kolizji.
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if len(aliens) == 0:
-        # Pozbycie się istniejących pocisków i utworzenie nowej floty.
+        # Pozbycie się istniejących pocisków, przyśpieszenie gry i utworzenie nowej floty.
         bullets.empty()
+        ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
 
 
@@ -163,6 +196,7 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
 
     else:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
 
 
 def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
