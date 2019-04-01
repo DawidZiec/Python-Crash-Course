@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
 
-class Ship():
+class Ship(Sprite):
 
     def __init__(self, ai_settings, screen):
         """Inicjalizacja statku kosmicznego i jego położenie początkowe."""
+        super().__init__()
         self.screen = screen
         self.ai_settings = ai_settings
 
@@ -42,3 +44,28 @@ class Ship():
     def center_ship(self):
         """Umieszczenie statku na środku przy dolnej krawędzi ekranu."""
         self.center = self.screen_rect.centerx
+
+
+class LittleShip(Sprite):
+
+    def __init__(self, ai_settings, screen):
+        """Inicjalizacja statku kosmicznego i jego położenie początkowe."""
+        super().__init__()
+        self.screen = screen
+        self.ai_settings = ai_settings
+
+        # Wczytanie obrazu statku kosmicznego i wczytanie jego prostokąta.
+        self.image = pygame.image.load('Alien Invaders/images/Ship_1.png')
+        self.rect = self.image.get_rect()
+        self.screen_rect = screen.get_rect()
+
+        # Każdy nowy statek kosmiczny pojaweia się na dole ekranu.
+        self.rect.centerx = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom
+
+        # Punkt środkowy statku jest przechowywany w postaci liczby zmiennoprzecinkowej.
+        self.center = float(self.rect.centerx)
+
+        # Opcje wskazująca na poruszanie się statku
+        self.moving_right = False
+        self.moving_left = False

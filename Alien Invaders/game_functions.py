@@ -26,7 +26,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
+def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
     """Reakcja na zdarzenia generowane przez klawiaturę i mysz."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -40,11 +40,11 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_settings, screen, stats, play_button,
+            check_play_button(ai_settings, screen, stats, sb, play_button,
                               ship, aliens, bullets, mouse_x, mouse_y)
 
 
-def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     """Rozpoczęcie nowej gry po kliknięciu przycisku Gra przez użytkownika."""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
@@ -57,6 +57,12 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
         # Wyzerowanie danych statystycznych gry.
         stats.reset_stats()
         stats.game_active = True
+
+        # Wyzerowanie obrazów tablicy wyników.
+        sb.prep_score()
+        sb.prep_high_score()
+        sb.prep_level()
+        sb.prep_ships()
 
         # Usunięcia zawartości list aliens i bullets.
         aliens.empty()
@@ -113,10 +119,16 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points * len(aliens)
             sb.prep_score()
+        check_high_score(stats, sb)
     if len(aliens) == 0:
-        # Pozbycie się istniejących pocisków, przyśpieszenie gry i utworzenie nowej floty.
+        # Jeżeli cała flota został zniszczona, gracz przechodzi na koljny poziom.
         bullets.empty()
         ai_settings.increase_speed()
+
+        # Inkrementacja numeru poziomu.
+        stats.level += 1
+        sb.prep_level()
+
         create_fleet(ai_settings, screen, ship, aliens)
 
 
@@ -185,11 +197,14 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Reakcja na uderzenie obcego w statek."""
     if stats.ships_left > 1:
         # Zmniejszczenie wartości przechowywanej w ships_left.
         stats.ships_left -= 1
+
+        # Uaktualnienie tablicy wyników.
+        sb.prep_ships()
 
         # Usunięcie zawartości list aliens i bullets.
         aliens.empty()
@@ -207,17 +222,17 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         pygame.mouse.set_visible(True)
 
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Sprawdzenie, czy którykolwiek obcy dotarł do dolnej krawędzi ekranu."""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Tak samo jak w przypadku zderzenia statku z obcym.
-            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
             break
 
 
-def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """
     Sprawdzenie, czy flota znajduje się przy krawędzi ekranu,
     a następnie uaktualnienie położenia wszystkich obcych we flocie.
@@ -227,7 +242,14 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
 
     # Wykrywanie kolizji między obcym i statkiem.
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
     # Wyszukiwanie obcych docierających do dolnej krawędzi ekranu.
-    check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
+
+def check_high_score(stats, sb):
+    """Sprawdzenie, czy mamy nowey najlepszy wynik osiągnięty dotąd w grze."""
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()
