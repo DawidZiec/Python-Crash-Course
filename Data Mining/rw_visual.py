@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from random_walk import RandomWalk
 
+# Mapy kolorów do losowego wybrania przy każdym rysowaniu.
 color_palette = [plt.cm.seismic, plt.cm.inferno, plt.cm.summer, plt.cm.plasma]
 
 # Tworzenie nowego błądzenia losowego, dopóki program pozostaje aktywny.
