@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Ma apps
+    # My apps
     'learning_logs',
 ]
 
